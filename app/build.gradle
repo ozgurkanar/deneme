@@ -4,22 +4,22 @@ plugins {
 
 android {
     namespace 'com.ozgur.burakslongroad'
-    compileSdk 37
+    compileSdk 36
 
     defaultConfig {
         applicationId 'com.ozgur.burakslongroad'
         minSdk 23
-        targetSdk 37
-        versionCode 1
-        versionName '1.0.0'
+        targetSdk 36
+        versionCode 2
+        versionName '1.0.1'
     }
 
     buildTypes {
         release {
             minifyEnabled false
             shrinkResources false
-            // This makes CI produce an installable AAB/APK without requiring your private Play upload key.
-            // For Google Play production upload, replace this with your own secure signing config.
+            // CI can create an installable AAB/APK without a private Play upload key.
+            // For Google Play production, replace this with your own secure upload signing config.
             signingConfig signingConfigs.debug
         }
         debug {

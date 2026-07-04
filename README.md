@@ -3,6 +3,20 @@
 A native Android 2D story-platformer. No Unity, no external art packs, no manual sprites.
 Everything is drawn in Java Canvas at runtime. Music and sound effects are generated programmatically.
 
+## Build stability update
+
+This version is pinned to a safer Android build chain:
+
+- Android Gradle Plugin: `8.13.2`
+- Gradle used in GitHub Actions: `8.13`
+- JDK: `17`
+- compileSdk: `36`
+- targetSdk: `36`
+- SDK package installed by CI: `platforms;android-36`
+- Build Tools installed by CI: `35.0.0`
+
+The previous `platforms;android-37` install step was removed because some GitHub SDK manager environments do not expose that package yet.
+
 ## Story
 
 Burak is a 9-year-old red-haired child. He lives with his mother. His parents are separated, but both love him deeply.
@@ -17,7 +31,7 @@ The story is warm, family-friendly, and hopeful. The mother is caring; the fathe
 - 5 story chapters
 - Touch controls: left, right, jump, action
 - Keyboard controls for emulator/testing: A/D, arrows, Space, E
-- Main menu, pause menu, credits, game-over, victory screen
+- Main menu, continue, pause menu, credits, game-over, victory screen
 - Checkpoints, lives, respawn, enemies, hazards, collectibles
 - Light puzzle mechanics with switches and bridges
 - Programmatic character, backgrounds, parallax, particles, UI and app icon
@@ -32,6 +46,8 @@ BuraksLongRoad/
   build.gradle
   gradle.properties
   README.md
+  KURULUM_TR.md
+  .gitignore
   .github/workflows/build-android.yml
   app/
     build.gradle
@@ -55,15 +71,16 @@ You do not need to create sprites.
 You do not need to create sounds.
 
 1. Create a new empty GitHub repository.
-2. Upload all files from this folder into the repository.
+2. Upload all files from this folder into the repository. Do not upload only the ZIP file.
 3. Go to the repository's **Actions** tab.
-4. Open **Build Android APK and AAB**.
-5. Press **Run workflow**.
-6. Wait until the build finishes.
-7. Open the finished workflow run.
-8. Download the artifact named **BuraksLongRoad-builds**.
-9. Extract the downloaded ZIP.
-10. Install the APK from:
+4. If GitHub asks to enable workflows, enable them.
+5. Open **Build Android APK and AAB**.
+6. Press **Run workflow**.
+7. Wait until the build finishes.
+8. Open the finished workflow run.
+9. Download the artifact named **BuraksLongRoad-builds**.
+10. Extract the downloaded ZIP.
+11. Install the APK from:
 
 ```text
 app-debug.apk
@@ -78,20 +95,36 @@ app-release.aab
 Important: The included release build is signed with the debug signing config so CI can produce a file without your private key.
 For Google Play production, replace the signing config with your real upload key before uploading.
 
+## GitHub Desktop upload checklist
+
+The GitHub repository root must show these files directly:
+
+```text
+app/
+.github/
+build.gradle
+settings.gradle
+gradle.properties
+README.md
+KURULUM_TR.md
+```
+
+If the repository shows only `BuraksLongRoad.zip`, the upload is wrong. Extract the ZIP and upload the extracted project files.
+
 ## Local build method
 
 Requirements:
 
 - Android Studio or Android SDK
 - JDK 17
-- Gradle 9.3.1 or newer compatible Gradle installation
-- Android SDK platform 37
-- Android Build Tools 36.0.0
+- Gradle 8.13 compatible installation, or Android Studio's bundled Gradle support
+- Android SDK platform 36
+- Android SDK Build Tools 35.0.0 or newer compatible build tools
 
 Build APK:
 
 ```bash
-gradle :app:assembleDebug
+gradle --no-daemon :app:assembleDebug
 ```
 
 Output:
@@ -103,7 +136,7 @@ app/build/outputs/apk/debug/app-debug.apk
 Build AAB:
 
 ```bash
-gradle :app:bundleRelease
+gradle --no-daemon :app:bundleRelease
 ```
 
 Output:
@@ -156,7 +189,29 @@ Before uploading to Google Play production:
 3. Update `versionCode` and `versionName` for each release.
 4. Create proper store screenshots from the game.
 5. Test on multiple Android devices.
-6. Consider adding Play policy pages: privacy policy, data safety, and content rating.
+6. Prepare Play Console requirements: privacy policy, Data Safety form, content rating, store listing, screenshots, and production signing.
+
+## Troubleshooting
+
+### `Failed to find package 'platforms;android-37'`
+
+Use this updated version. It no longer requests `android-37`; the workflow installs `platforms;android-36`.
+
+### `No workflows are shown in GitHub Actions`
+
+Make sure the repository contains this file:
+
+```text
+.github/workflows/build-android.yml
+```
+
+### `gradle: command not found` locally
+
+Use GitHub Actions or open the project in Android Studio. The GitHub workflow installs Gradle automatically.
+
+### APK installs but phone blocks it
+
+Enable installation from unknown sources for the browser or file manager you used to open the APK.
 
 ## Known limitations
 

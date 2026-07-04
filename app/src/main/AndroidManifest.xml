@@ -2,9 +2,9 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/app_icon"
-        android:label="Burak's Long Road"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        android:resizeableActivity="false"
+        android:resizeableActivity="true"
         android:usesCleartextTraffic="false">
         <activity
             android:name=".MainActivity"

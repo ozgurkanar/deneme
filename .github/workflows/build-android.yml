@@ -5,9 +5,14 @@ on:
   push:
     branches: [ main, master ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
+
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -19,23 +24,29 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK packages
-        run: sdkmanager "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;35.0.0'
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 9.3.1
+          gradle-version: '8.13'
+
+      - name: Show tool versions
+        run: |
+          java -version
+          gradle --version
+          sdkmanager --list_installed
 
       - name: Build debug APK and release AAB
-        run: gradle :app:assembleDebug :app:bundleRelease --stacktrace
+        run: gradle --no-daemon :app:assembleDebug :app:bundleRelease --stacktrace
 
       - name: Upload APK and AAB artifacts
         uses: actions/upload-artifact@v4
         with:
           name: BuraksLongRoad-builds
+          if-no-files-found: error
           path: |
             app/build/outputs/apk/debug/*.apk
             app/build/outputs/bundle/release/*.aab
