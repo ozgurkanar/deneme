@@ -1,27 +1,28 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
-    namespace 'com.lumastudio.lumaleap'
-    compileSdk 34
+    namespace 'com.ozgur.burakslongroad'
+    compileSdk 37
 
     defaultConfig {
-        applicationId "com.lumastudio.lumaleap"
+        applicationId 'com.ozgur.burakslongroad'
         minSdk 23
-        targetSdk 34
+        targetSdk 37
         versionCode 1
-        versionName "1.0"
+        versionName '1.0.0'
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            shrinkResources false
+            // This makes CI produce an installable AAB/APK without requiring your private Play upload key.
+            // For Google Play production upload, replace this with your own secure signing config.
+            signingConfig signingConfigs.debug
         }
         debug {
-            minifyEnabled false
             debuggable true
         }
     }
@@ -30,17 +31,4 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-
-    kotlinOptions {
-        jvmTarget = '17'
-    }
-
-    buildFeatures {
-        viewBinding false
-    }
-}
-
-dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
 }
