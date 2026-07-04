@@ -1,31 +1,30 @@
-# Burakin Uzun Yolu - Kurulum (Türkçe)
+# Kurulum - Burak'in Uzun Yolu LibGDX
 
-## En kolay yöntem: GitHub Desktop + GitHub Actions
+## GitHub Desktop ile yukleme
+1. ZIP'i cikar.
+2. GitHub Desktop ac.
+3. `File > Add local repository` sec.
+4. `BurakLibGDXTR` klasorunu sec.
+5. Gerekirse `create repository` de.
+6. Commit mesaji yaz: `LibGDX Burak oyunu ilk surum`
+7. `Commit to main` de.
+8. `Publish repository` ile GitHub'a gonder.
 
-1. Bu klasörü GitHub Desktop ile bir repoya ekle.
-2. `Commit to main` yap.
-3. `Push origin` ile GitHub'a gönder.
-4. GitHub'da `Actions` sekmesine gir.
-5. `Build Android APK and AAB` workflow'unu çalıştır.
-6. Build tamamlanınca `BurakinUzunYoluTR-builds` artifact'ini indir.
-7. İçinden çıkan `app-debug.apk` dosyasını telefona gönder.
-8. Telefonda APK'yı kur.
+## APK alma
+1. GitHub'da repo sayfasina gir.
+2. `Actions` sekmesini ac.
+3. `Build LibGDX Android APK and AAB` workflow'unu ac.
+4. `Run workflow` de.
+5. Build bitince `BurakLibGDXTR-builds` artifact'ini indir.
+6. APK dosyasini telefona atip kur.
 
-## Android Studio ile
-1. Android Studio aç.
-2. `Open` ile proje klasörünü seç.
-3. Gradle senkronizasyonunun bitmesini bekle.
-4. `Build > Build APK(s)` seç.
-5. APK şu klasörde oluşur:
-   `app/build/outputs/apk/debug/app-debug.apk`
+## Telefonda izin
+APK kurulmazsa Android'de `Bilinmeyen uygulama yukleme` iznini ac.
 
-## Telefona yükleme
-- APK'yı WhatsApp, Telegram, kablo veya Drive ile telefona at.
-- Dosyaya dokunup kur.
-- Gerekirse `Bilinmeyen uygulama yükleme` iznini aç.
-
-## Bu sürümde düzeltilenler
-- Şeffaf / renksiz platform hissi giderildi.
-- Arayüz tamamen Türkçeleştirildi.
-- Bölümler daha dengeli olacak şekilde yeniden düzenlendi.
-- Görsel katmanlar ve platform detayları güçlendirildi.
+## Bu surumun amaci
+Bu paket final oyun degil; uzun vadede kaliteli 2D oyun icin dogru temeldir:
+- LibGDX mimarisi
+- gercek sprite dosyalari
+- gercek ses dosyalari
+- level sistemi
+- daha guvenli ziplama tasarimi

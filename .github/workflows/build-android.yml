@@ -1,4 +1,4 @@
-name: Build Android APK and AAB
+name: Build LibGDX Android APK and AAB
 
 on:
   workflow_dispatch:
@@ -11,8 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-
+    timeout-minutes: 30
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -33,33 +32,33 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Show tool versions
-        run: |
-          java -version
-          gradle --version
-          sdkmanager --list_installed
-
-      - name: Sanity check Android resources
+      - name: Verify generated assets exist
         run: |
           python3 - <<'PY'
-          import pathlib, xml.etree.ElementTree as ET
-          root = pathlib.Path('app/src/main/res')
-          for xml in root.rglob('*.xml'):
-              ET.parse(xml)
-          text = pathlib.Path('app/src/main/res/values/strings.xml').read_text(encoding='utf-8')
-          if '<string name="app_name">Burakin Uzun Yolu</string>' not in text:
-              raise SystemExit('strings.xml beklenen app_name içeriğini taşımıyor')
-          print('Resource XML sanity check passed')
+          from pathlib import Path
+          required = [
+            'android/assets/images/burak_sheet.png',
+            'android/assets/images/tileset.png',
+            'android/assets/images/objects.png',
+            'android/assets/images/enemy_doubt_sheet.png',
+            'android/assets/images/bg_home.png',
+            'android/assets/audio/jump.wav',
+            'android/assets/audio/music_level.wav'
+          ]
+          missing = [p for p in required if not Path(p).exists()]
+          if missing:
+              raise SystemExit('Missing generated assets: ' + ', '.join(missing))
+          print('Asset sanity check passed')
           PY
 
       - name: Build debug APK and release AAB
-        run: gradle --no-daemon :app:assembleDebug :app:bundleRelease --stacktrace
+        run: gradle --no-daemon :android:assembleDebug :android:bundleRelease --stacktrace
 
-      - name: Upload APK and AAB artifacts
+      - name: Upload builds
         uses: actions/upload-artifact@v4
         with:
-          name: BurakinUzunYoluTR-builds
+          name: BurakLibGDXTR-builds
           if-no-files-found: error
           path: |
-            app/build/outputs/apk/debug/*.apk
-            app/build/outputs/bundle/release/*.aab
+            android/build/outputs/apk/debug/*.apk
+            android/build/outputs/bundle/release/*.aab
