@@ -39,6 +39,19 @@ jobs:
           gradle --version
           sdkmanager --list_installed
 
+      - name: Sanity check Android resources
+        run: |
+          python3 - <<'PY'
+          import pathlib, xml.etree.ElementTree as ET
+          root = pathlib.Path('app/src/main/res')
+          for xml in root.rglob('*.xml'):
+              ET.parse(xml)
+          text = pathlib.Path('app/src/main/res/values/strings.xml').read_text(encoding='utf-8')
+          if '<string name="app_name">Burak\'s Long Road</string>' in text:
+              raise SystemExit('Invalid Android string escape in app_name')
+          print('Resource XML sanity check passed')
+          PY
+
       - name: Build debug APK and release AAB
         run: gradle --no-daemon :app:assembleDebug :app:bundleRelease --stacktrace
 

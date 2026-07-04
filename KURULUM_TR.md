@@ -1,17 +1,26 @@
-# Burak's Long Road - Kurulum
+# Buraks Long Road - Kurulum
 
 Bu proje Unity istemez. Native Android Java projesidir.
 Görseller, karakter, arka planlar, UI, partiküller, müzik ve ses efektleri kod içinde üretilir.
 
-## Bu sürümde düzeltilen ana hata
+## Bu sürümde düzeltilen ana hatalar
 
-GitHub Actions daha önce şunu kurmaya çalışıyordu:
+1. GitHub Actions daha önce şunu kurmaya çalışıyordu:
 
 ```text
 platforms;android-37
 ```
 
 Bazı GitHub SDK ortamlarında bu paket bulunmadığı için build düşüyordu.
+
+2. Son logda Android resource compiler şu hatayı verdi:
+
+```text
+Invalid unicode escape sequence in string / string/app_name does not contain a valid string resource
+```
+
+Bunun nedeni `strings.xml` içindeki uygulama adında apostrof kullanılmasıydı. Android resource parser bu karakteri string escape olarak sorunlu okuyabildiği için uygulama etiketi `Buraks Long Road` yapıldı. Oyun içindeki başlık görselinde hikâye adı hâlâ korunur.
+
 Bu sürümde build zinciri daha güvenli değerlere sabitlendi:
 
 ```text
@@ -34,7 +43,7 @@ Build Tools: 35.0.0
 6. Sol alttaki commit alanına şunu yaz:
 
 ```text
-Fix Android build and upload Burak's Long Road
+Fix Android resources and upload Buraks Long Road
 ```
 
 7. `Commit to main` butonuna bas.
@@ -124,6 +133,10 @@ Klavye / emulator:
 ### `Failed to find package 'platforms;android-37'`
 
 Eski dosyayı kullanıyorsun. Bu güncel ZIP'i yükle. Güncel workflow `android-37` istemez.
+
+### `Invalid unicode escape sequence in string` veya `string/app_name does not contain a valid string resource`
+
+Eski dosyada `app_name` içinde apostrof vardı. Bu sürümde `app/src/main/res/values/strings.xml` düzeltildi ve workflow'a resource sanity check eklendi.
 
 ### Actions sekmesinde workflow çıkmıyor
 

@@ -1,9 +1,11 @@
-# Burak's Long Road
+# Buraks Long Road
 
 A native Android 2D story-platformer. No Unity, no external art packs, no manual sprites.
 Everything is drawn in Java Canvas at runtime. Music and sound effects are generated programmatically.
 
 ## Build stability update
+
+This version also fixes an Android resource compilation issue caused by an apostrophe in the `app_name` string resource. The launcher label is now `Buraks Long Road` to avoid AAPT string escape failures.
 
 This version is pinned to a safer Android build chain:
 
@@ -154,7 +156,7 @@ app/build/outputs/bundle/release/app-release.aab
 3. Android may ask to allow installs from this source.
 4. Enable permission for that file manager/browser.
 5. Install the APK.
-6. Open **Burak's Long Road**.
+6. Open **Buraks Long Road**.
 
 ### Method 2: ADB install
 
@@ -196,6 +198,10 @@ Before uploading to Google Play production:
 ### `Failed to find package 'platforms;android-37'`
 
 Use this updated version. It no longer requests `android-37`; the workflow installs `platforms;android-36`.
+
+### `Invalid unicode escape sequence in string` or `string/app_name does not contain a valid string resource`
+
+Use this updated version. The launcher label in `app/src/main/res/values/strings.xml` no longer contains an apostrophe, and the workflow includes a resource sanity check before building.
 
 ### `No workflows are shown in GitHub Actions`
 
