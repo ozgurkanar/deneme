@@ -399,7 +399,7 @@ public class GameView extends View {
                 player.respawnX = cp.x;
                 player.respawnY = cp.y - player.h;
                 soundEngine.checkpoint();
-                level.message = "Checkpoint: a paper plane points forward.";
+                level.message = "Kontrol noktası etkin: Kağıt uçak doğru yolu gösteriyor.";
                 level.messageTimer = 2.0f;
                 spawnDust(cp.x, cp.y, 18, 0xAAFFFFFF);
             }
@@ -409,7 +409,7 @@ public class GameView extends View {
     private void handleSwitches() {
         for (Switch swt : level.switches) {
             if (!swt.on && distance(player.centerX(), player.centerY(), swt.x, swt.y) < 46f) {
-                level.message = "Tap the hand button to unfold the bridge.";
+                level.message = "Köprüyü açmak için yıldız düğmesine dokun.";
                 level.messageTimer = 0.25f;
             }
         }
@@ -439,7 +439,7 @@ public class GameView extends View {
         player.vy = 0;
         player.invuln = 1.2f;
         cameraX = Math.max(0, player.x - viewWorldW() * 0.30f);
-        level.message = "Burak breathes in and tries again.";
+        level.message = "Burak derin bir nefes alıp yeniden deniyor.";
         level.messageTimer = 2.0f;
     }
 
@@ -460,16 +460,16 @@ public class GameView extends View {
         textPaint.setFakeBoldText(false);
         textPaint.setTextSize(sp(19));
         textPaint.setColor(0xFFEAF5FF);
-        drawMultiline(c, "A heartfelt 2D platform journey across four hours of distance.", getWidth() / 2f, getHeight() * 0.38f, getWidth() * 0.74f, sp(24));
+        drawMultiline(c, "Türkçe hikâyeli, duygusal ve detaylı bir 2D platform yolculuğu.", getWidth() / 2f, getHeight() * 0.38f, getWidth() * 0.74f, sp(24));
 
-        drawButton(c, menuStart, "New Journey", 0xFFEAA64B);
-        drawButton(c, menuContinue, unlockedLevel > 0 ? "Continue: Chapter " + (unlockedLevel + 1) : "Continue: Not yet", unlockedLevel > 0 ? 0xFF6EB5FF : 0xFF55606E);
-        drawButton(c, menuAudio, audioEnabled ? "Sound: On" : "Sound: Off", 0xFF7FD9A7);
-        drawButton(c, menuCredits, "Credits", 0xFFB894FF);
+        drawButton(c, menuStart, "Yeni Oyuna Başla", 0xFFEAA64B);
+        drawButton(c, menuContinue, unlockedLevel > 0 ? "Devam Et: Bölüm " + (unlockedLevel + 1) : "Devam Et: Henüz açık değil", unlockedLevel > 0 ? 0xFF6EB5FF : 0xFF55606E);
+        drawButton(c, menuAudio, audioEnabled ? "Ses: Açık" : "Ses: Kapalı", 0xFF7FD9A7);
+        drawButton(c, menuCredits, "Künye", 0xFFB894FF);
 
         textPaint.setTextSize(sp(13));
         textPaint.setColor(0xBFFFFFFF);
-        c.drawText("No Unity • No external assets • Programmatic art and generated music", getWidth() / 2f, getHeight() - sp(20), textPaint);
+        c.drawText("Unity yok • Dış asset yok • Görsel ve sesler kodla üretilir", getWidth() / 2f, getHeight() - sp(20), textPaint);
     }
 
     private void drawTitleLogo(Canvas c, float x, float y) {
@@ -478,9 +478,9 @@ public class GameView extends View {
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(42));
-        c.drawText("BURAK'S", x, y, textPaint);
+        c.drawText("BURAK'IN", x, y, textPaint);
         textPaint.setTextSize(sp(48));
-        c.drawText("LONG ROAD", x, y + sp(52), textPaint);
+        c.drawText("UZUN YOLU", x, y + sp(52), textPaint);
         textPaint.setShader(null);
         textPaint.setFakeBoldText(false);
         drawBurakPortrait(c, x - getWidth() * 0.27f, y + sp(28), 1.15f);
@@ -491,7 +491,7 @@ public class GameView extends View {
         int chapter = Math.min(levelIndex, MAX_LEVELS - 1);
         drawFullBackground(c, chapter, runTime * 8f);
         drawSoftOverlay(c, 0x660A1024);
-        StoryCard card = activeStory.isEmpty() ? new StoryCard("Burak's Long Road", "Tap to continue.", 0) : activeStory.get(storyIndex);
+        StoryCard card = activeStory.isEmpty() ? new StoryCard("Burak'ın Uzun Yolu", "Devam etmek için dokun.", 0) : activeStory.get(storyIndex);
 
         float alpha = storyFade;
         int a = (int) (alpha * 255);
@@ -525,7 +525,7 @@ public class GameView extends View {
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setTextSize(sp(15));
         textPaint.setColor(0xCCFFFFFF);
-        c.drawText("Tap anywhere to continue", getWidth() / 2f, rect.bottom - sp(22), textPaint);
+        c.drawText("Devam etmek için ekrana dokun", getWidth() / 2f, rect.bottom - sp(22), textPaint);
         textPaint.setAlpha(255);
     }
 
@@ -619,26 +619,64 @@ public class GameView extends View {
         float x = sx(p.x), y = sy(p.y), w = sw(p.w), h = sw(p.h);
         if (x + w < -40 || x > getWidth() + 40) return;
         rect.set(x, y, x + w, y + h);
-        paint.setShader(new LinearGradient(0, y, 0, y + h, lighten(color, 1.10f), darken(color, 0.70f), Shader.TileMode.CLAMP));
+        int topColor = bridge ? 0xFFD1AE7A : lighten(color, 1.16f);
+        int midColor = bridge ? 0xFFA77A4E : color;
+        int bottomColor = bridge ? 0xFF6E4A2C : darken(color, 0.70f);
+        paint.setShader(new LinearGradient(0, y, 0, y + h, topColor, bottomColor, Shader.TileMode.CLAMP));
         c.drawRoundRect(rect, sw(6), sw(6), paint);
         paint.setShader(null);
-        paint.setColor(0x33000000);
-        c.drawRect(x, y + h * 0.70f, x + w, y + h, paint);
-        if (!bridge) {
-            paint.setColor(0x44FFFFFF);
-            for (float tx = x + sw(14); tx < x + w; tx += sw(46)) c.drawCircle(tx, y + sw(8), sw(2.1f), paint);
-        } else {
-            paint.setColor(0x663B2A1D);
-            for (float tx = x + sw(18); tx < x + w; tx += sw(32)) c.drawLine(tx, y, tx - sw(10), y + h, paint);
+
+        // üst katman
+        paint.setColor(bridge ? 0xFFE0C49A : lighten(color, 1.30f));
+        c.drawRoundRect(x, y, x + w, y + h * 0.24f, sw(6), sw(6), paint);
+
+        // ön yüz doku çizgileri
+        paint.setColor(bridge ? 0xAA5E3D24 : 0x26000000);
+        float stripe = bridge ? sw(30) : sw(38);
+        for (float tx = x + sw(10); tx < x + w - sw(8); tx += stripe) {
+            c.drawRect(tx, y + h * 0.18f, tx + sw(5), y + h * 0.88f, paint);
         }
+
+        // alt gölge
+        paint.setColor(0x33000000);
+        c.drawRect(x, y + h * 0.72f, x + w, y + h, paint);
+
+        if (!bridge) {
+            paint.setColor(0x66FFFFFF);
+            for (float tx = x + sw(14); tx < x + w - sw(8); tx += sw(34)) {
+                c.drawOval(tx, y + sw(5), tx + sw(12), y + sw(11), paint);
+            }
+            paint.setColor(0x446B4A2F);
+            for (float tx = x + sw(16); tx < x + w - sw(18); tx += sw(42)) {
+                c.drawLine(tx, y + h * 0.32f, tx + sw(8), y + h * 0.56f, paint);
+            }
+        } else {
+            paint.setColor(0xCC5A3823);
+            for (float tx = x + sw(12); tx < x + w - sw(8); tx += sw(28)) {
+                c.drawLine(tx, y + sw(2), tx - sw(8), y + h - sw(2), paint);
+            }
+            paint.setColor(0xCCFFE2A3);
+            c.drawCircle(x + w * 0.5f, y + h * 0.48f, sw(6), paint);
+            paint.setColor(0xCC8A5B2E);
+            c.drawCircle(x + w * 0.5f, y + h * 0.48f, sw(2.5f), paint);
+        }
+
+        // dış çizgi
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(sw(1.4f));
+        paint.setColor(0x55FFFFFF);
+        c.drawRoundRect(rect, sw(6), sw(6), paint);
+        paint.setStyle(Paint.Style.FILL);
     }
 
     private void drawMovingPlatform(Canvas c, MovingPlatform mp) {
-        drawPlatform(c, mp, 0xFF5DA6BE, false);
-        paint.setColor(0xAAFFFFFF);
+        drawPlatform(c, mp, 0xFF5E8CB9, false);
+        paint.setColor(0xAAEAF6FF);
         float x = sx(mp.x), y = sy(mp.y), w = sw(mp.w);
         c.drawCircle(x + w * 0.22f, y + sw(8), sw(3), paint);
         c.drawCircle(x + w * 0.78f, y + sw(8), sw(3), paint);
+        paint.setColor(0x88435A7D);
+        c.drawRect(x + w * 0.20f, y + sw(12), x + w * 0.80f, y + sw(16), paint);
     }
 
     private void drawHazard(Canvas c, Hazard h) {
@@ -782,7 +820,7 @@ public class GameView extends View {
 
     private void drawForeground(Canvas c) {
         if (level.messageTimer > 0) {
-            level.messageTimer -= 0.016f;
+            level.messageTimer = Math.max(0f, level.messageTimer - 0.016f);
             textPaint.setTextAlign(Paint.Align.CENTER);
             textPaint.setColor(0xEEFFFFFF);
             textPaint.setTextSize(sp(15));
@@ -803,10 +841,10 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(16));
         textPaint.setColor(Color.WHITE);
-        c.drawText("Chapter " + (levelIndex + 1) + ": " + level.name, pad + sp(14), pad + sp(22), textPaint);
+        c.drawText("Bölüm " + (levelIndex + 1) + ": " + level.name, pad + sp(14), pad + sp(22), textPaint);
         textPaint.setTextSize(sp(14));
         textPaint.setFakeBoldText(false);
-        c.drawText("Score " + (totalScore + level.scoreEarned) + "   Lives " + player.lives, pad + sp(14), pad + sp(40), textPaint);
+        c.drawText("Puan " + (totalScore + level.scoreEarned) + "   Can " + player.lives, pad + sp(14), pad + sp(40), textPaint);
         drawButtonIcon(c, btnPause, "Ⅱ");
     }
 
@@ -850,10 +888,10 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(38));
         textPaint.setColor(0xFFFFE0A6);
-        c.drawText("Paused", getWidth() / 2f, getHeight() * 0.34f, textPaint);
-        drawButton(c, wideButton, "Resume", 0xFFEAA64B);
+        c.drawText("Duraklatıldı", getWidth() / 2f, getHeight() * 0.34f, textPaint);
+        drawButton(c, wideButton, "Devam Et", 0xFFEAA64B);
         RectF b2 = new RectF(wideButton.left, wideButton.bottom + sp(18), wideButton.right, wideButton.bottom + sp(80));
-        drawButton(c, b2, "Main Menu", 0xFF6EB5FF);
+        drawButton(c, b2, "Ana Menü", 0xFF6EB5FF);
     }
 
     private void drawEndPanel(Canvas c, boolean victory) {
@@ -862,12 +900,12 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(34));
         textPaint.setColor(victory ? 0xFFFFE0A6 : 0xFFFF9E9E);
-        c.drawText(victory ? "Journey Complete" : "Try Again", getWidth() / 2f, getHeight() * 0.31f, textPaint);
+        c.drawText(victory ? "Yolculuk Tamamlandı" : "Tekrar Dene", getWidth() / 2f, getHeight() * 0.31f, textPaint);
         textPaint.setFakeBoldText(false);
         textPaint.setTextSize(sp(17));
         textPaint.setColor(0xFFFFFFFF);
-        drawMultiline(c, victory ? "Burak keeps the road in his heart, but this time he reaches the arms waiting at the end." : "The road feels long, but Burak has not lost hope.", getWidth() / 2f, getHeight() * 0.40f, getWidth() * 0.70f, sp(24));
-        drawButton(c, wideButton, victory ? "Back to Menu" : "Restart Chapter", 0xFFEAA64B);
+        drawMultiline(c, victory ? "Burak bu kez yolu tamamlıyor ve sonunda onu bekleyen sıcak kucaklaşmaya ulaşıyor." : "Yol uzun görünse de Burak umudunu kaybetmiyor.", getWidth() / 2f, getHeight() * 0.40f, getWidth() * 0.70f, sp(24));
+        drawButton(c, wideButton, victory ? "Ana Menüye Dön" : "Bölümü Yeniden Başlat", 0xFFEAA64B);
     }
 
     private void drawVictory(Canvas c) {
@@ -879,12 +917,12 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(34));
         textPaint.setColor(0xFFFFE0A6);
-        c.drawText("They Finally Meet", getWidth() / 2f, getHeight() * 0.17f, textPaint);
+        c.drawText("Nihayet Buluşuyorlar", getWidth() / 2f, getHeight() * 0.17f, textPaint);
         textPaint.setFakeBoldText(false);
         textPaint.setTextSize(sp(17));
         textPaint.setColor(0xFFFFFFFF);
-        drawMultiline(c, "Four hours was never just distance. It was a road made of courage, memories, and love.", getWidth() / 2f, getHeight() * 0.72f, getWidth() * 0.72f, sp(24));
-        drawButton(c, wideButton, "Main Menu", 0xFFEAA64B);
+        drawMultiline(c, "Dört saat yalnızca mesafe değildi; cesaretin, hatıraların ve sevginin içinden geçen bir yoldu.", getWidth() / 2f, getHeight() * 0.72f, getWidth() * 0.72f, sp(24));
+        drawButton(c, wideButton, "Ana Menü", 0xFFEAA64B);
     }
 
     private void drawCredits(Canvas c) {
@@ -894,12 +932,12 @@ public class GameView extends View {
         textPaint.setFakeBoldText(true);
         textPaint.setTextSize(sp(34));
         textPaint.setColor(0xFFFFE0A6);
-        c.drawText("Credits", getWidth() / 2f, getHeight() * 0.20f, textPaint);
+        c.drawText("Künye", getWidth() / 2f, getHeight() * 0.20f, textPaint);
         textPaint.setFakeBoldText(false);
         textPaint.setTextSize(sp(18));
         textPaint.setColor(Color.WHITE);
         drawMultiline(c, "Game, art, levels, UI, and music are generated in code.\nA small story about a child, a long road, and a love that stays kind from both sides.", getWidth() / 2f, getHeight() * 0.34f, getWidth() * 0.74f, sp(27));
-        drawButton(c, wideButton, "Back", 0xFFEAA64B);
+        drawButton(c, wideButton, "Geri", 0xFFEAA64B);
     }
 
     private void drawButton(Canvas c, RectF r, String text, int color) {
@@ -1260,27 +1298,27 @@ public class GameView extends View {
 
     private List<StoryCard> storyFor(int chapter, boolean opening) {
         List<StoryCard> cards = new ArrayList<>();
-        if (chapter == 0) {
-            cards.add(new StoryCard("The Window Seat", "Burak is nine. His hair is the color of autumn leaves, and every Friday evening he sits by the window with a paper plane in his hand.", 0));
-            cards.add(new StoryCard("Four Hours Away", "His mother makes tea and smiles softly. His father calls from another city. They both love him, but the road between them is four hours long.", 0));
-            cards.add(new StoryCard("A Little Plan", "When a storm delays the weekend visit, Burak decides to follow the paper planes he and his father once folded together. Each one points toward the city lights.", 1));
+        if (opening) {
+            cards.add(new StoryCard("Pencere Kenarı", "Burak dokuz yaşında. Kızıl saçları akşam ışığında parlıyor. Her cuma, pencerenin önünde babasının verdiği küçük kağıt uçağı elinde tutup yolu düşünüyor.", 0));
+            cards.add(new StoryCard("Dört Saatlik Mesafe", "Burak annesiyle yaşıyor. Babası başka bir şehirde. Aralarında tam dört saatlik bir yol var. İkisi de onu çok seviyor; ayrılık sevgiyi azaltmıyor, sadece özlemi büyütüyor.", 0));
+            cards.add(new StoryCard("Yola Çıkma Cesareti", "Bu hafta sonu fırtına yüzünden planlar bozulunca Burak, babasına ulaşmak için kağıt uçakların bıraktığı izleri takip etmeye karar veriyor. Her kat, ona bir anıyı hatırlatıyor.", 1));
         } else if (chapter == 1) {
-            cards.add(new StoryCard("Beyond the Neighborhood", "Burak leaves a note for his mother and steps beyond the familiar streets. The morning smells like bread, rain, and courage.", 1));
+            cards.add(new StoryCard("Mahalleden Öte", "Burak tanıdığı sokaklardan ayrılıyor. Mahalle biterken kalbi hızlanıyor ama annesinin sesi aklında: 'Korksan bile doğru adımı atabilirsin.'", 1));
         } else if (chapter == 2) {
-            cards.add(new StoryCard("Rain on the Long Bridge", "Clouds gather over the fields. Burak remembers his father saying, 'A brave heart is not a heart without fear. It is a heart that keeps walking.'", 2));
+            cards.add(new StoryCard("Yağmurlu Vadi", "Şehirler arasındaki yol uzadıkça yağmur başlıyor. Burak, babasının yıllar önce söylediği sözü hatırlıyor: 'Cesaret, korkusuz olmak değil; korksan da yürümeye devam etmektir.'", 2));
         } else if (chapter == 3) {
-            cards.add(new StoryCard("The City Approach", "Night arrives. The other city glows ahead like a box of stars. Burak is tired, but every light feels like it might be his father's window.", 3));
-        } else {
-            cards.add(new StoryCard("The Last Station", "The road grows quiet. Burak sees the station clock and the final paper plane. His hands shake, but his smile returns.", 4));
+            cards.add(new StoryCard("Şehir Işıkları", "Gece çökerken uzaktaki şehir görünmeye başlıyor. Pencerelerdeki sarı ışıklar, Burak'a babasının evinin de çok yakında olduğunu hissettiriyor.", 3));
+        } else if (chapter == 4) {
+            cards.add(new StoryCard("Son Dönemeç", "Otogarın saati, son kağıt uçak ve sessiz sokaklar... Burak artık çok yakında. Elleri titriyor ama yüzünde yeniden bir gülümseme beliriyor.", 4));
         }
         return cards;
     }
 
     private List<StoryCard> endingStory() {
         List<StoryCard> cards = new ArrayList<>();
-        cards.add(new StoryCard("The Open Door", "Burak knocks once. Then twice. The door opens before the third knock.", 4));
-        cards.add(new StoryCard("No One Was Forgotten", "His father kneels and hugs him so tightly that the whole four-hour road seems to fold into one small room.", 4));
-        cards.add(new StoryCard("A Road With Two Homes", "Burak learns that love can live in two cities, two homes, and still be whole. The distance is real, but so is the way back.", 4));
+        cards.add(new StoryCard("Kapı Açılıyor", "Burak kapıyı bir kez çalıyor. Sonra bir kez daha. Üçüncüye gerek kalmadan kapı açılıyor.", 4));
+        cards.add(new StoryCard("Sımsıkı Sarılma", "Babası diz çöküp Burak'a sarılıyor. Sanki o dört saatlik yol bir anda küçülüp tek bir odanın içine sığıyor.", 4));
+        cards.add(new StoryCard("İki Ev, Tek Sevgi", "Burak anlıyor ki sevgi iki şehirde, iki evde ve iki ayrı hayatta da eksilmeden kalabiliyor. Mesafe gerçek ama kavuşmak da gerçek.", 4));
         return cards;
     }
 
@@ -1445,73 +1483,211 @@ public class GameView extends View {
     private static final class LevelFactory {
         static Level create(int idx) {
             Level l = new Level();
-            l.width = 2850 + idx * 260;
             l.startX = 80;
             l.startY = 360;
             int baseColor;
-            if (idx == 0) { l.name = "Home Streets"; baseColor = 0xFF79A65B; }
-            else if (idx == 1) { l.name = "Outskirts"; baseColor = 0xFF6FA75B; }
-            else if (idx == 2) { l.name = "Rain Bridge"; baseColor = 0xFF5F7389; }
-            else if (idx == 3) { l.name = "Night City"; baseColor = 0xFF536E9B; }
-            else { l.name = "Father's Station"; baseColor = 0xFF8B6EB9; }
-
-            add(l.platforms, 0, 455, 420, 85, baseColor);
-            add(l.platforms, 500, 455, 310, 85, baseColor);
-            add(l.platforms, 900, 455, 270, 85, baseColor);
-            add(l.platforms, 1280, 455, 360, 85, baseColor);
-            add(l.platforms, 1760, 455, 300, 85, baseColor);
-            add(l.platforms, 2190, 455, 310, 85, baseColor);
-            add(l.platforms, 2600, 455, 420, 85, baseColor);
-
-            add(l.platforms, 340, 365, 120, 28, tint(baseColor, 1.08f));
-            add(l.platforms, 720, 340, 120, 28, tint(baseColor, 1.08f));
-            add(l.platforms, 1040, 310, 130, 28, tint(baseColor, 1.08f));
-            add(l.platforms, 1480, 360, 130, 28, tint(baseColor, 1.08f));
-            add(l.platforms, 1950, 335, 130, 28, tint(baseColor, 1.08f));
-            add(l.platforms, 2350, 300, 120, 28, tint(baseColor, 1.08f));
-
-            l.collectibles.add(new Collectible(355, 330, "A memory plane: 'Dad taught me the first fold.'"));
-            l.collectibles.add(new Collectible(750, 305, "A memory plane: 'Mom said courage can be quiet.'"));
-            l.collectibles.add(new Collectible(1075, 275, "A memory plane: 'Four hours can still be crossed.'"));
-            l.collectibles.add(new Collectible(1510, 325, "A memory plane: 'Keep walking.'"));
-            l.collectibles.add(new Collectible(1990, 300, "A memory plane: 'Almost there.'"));
-            l.collectibles.add(new Collectible(2380, 265, "A memory plane: 'One more chapter.'"));
-
-            l.enemies.add(new Enemy(610, 421, 545, 760, 52 + idx * 8));
-            l.enemies.add(new Enemy(1380, 421, 1290, 1580, 62 + idx * 8));
-            l.enemies.add(new Enemy(2240, 421, 2195, 2460, 70 + idx * 7));
-
-            l.hazards.add(new Hazard(420, 498, 80, 42, idx == 2 ? 1 : 0));
-            l.hazards.add(new Hazard(810, 498, 90, 42, idx == 3 ? 1 : 0));
-            l.hazards.add(new Hazard(1640, 498, 120, 42, idx == 2 ? 1 : 0));
-            l.hazards.add(new Hazard(2060, 498, 130, 42, idx == 3 ? 1 : 0));
-
-            l.checkpoints.add(new Checkpoint(1220, 420));
-            l.checkpoints.add(new Checkpoint(2140, 420));
-
-            if (idx >= 1) {
-                l.movingPlatforms.add(new MovingPlatform(1160, 375, 130, 26, 1120, 1290, 65 + idx * 10));
-                l.movingPlatforms.add(new MovingPlatform(2480, 355, 120, 26, 2450, 2600, 75 + idx * 8));
+            int accentColor;
+            switch (idx) {
+                case 0:
+                    l.name = "Mahalle Sokakları";
+                    l.width = 3440;
+                    baseColor = 0xFF6B9B55;
+                    accentColor = tint(baseColor, 1.10f);
+                    add(l.platforms, 0, 455, 520, 85, baseColor);
+                    add(l.platforms, 620, 455, 330, 85, baseColor);
+                    add(l.platforms, 1060, 455, 370, 85, baseColor);
+                    add(l.platforms, 1560, 455, 410, 85, baseColor);
+                    add(l.platforms, 2110, 455, 360, 85, baseColor);
+                    add(l.platforms, 2620, 455, 380, 85, baseColor);
+                    add(l.platforms, 3140, 455, 240, 85, baseColor);
+                    add(l.platforms, 290, 360, 120, 28, accentColor);
+                    add(l.platforms, 820, 330, 130, 28, accentColor);
+                    add(l.platforms, 1240, 300, 130, 28, accentColor);
+                    add(l.platforms, 1760, 340, 140, 28, accentColor);
+                    add(l.platforms, 2280, 315, 130, 28, accentColor);
+                    add(l.platforms, 2850, 300, 140, 28, accentColor);
+                    l.collectibles.add(new Collectible(320, 325, "Kağıt uçak: 'Babam ilk katlamayı bana öğretmişti.'"));
+                    l.collectibles.add(new Collectible(850, 295, "Kağıt uçak: 'Annem, cesaretin sessiz de olabileceğini söylemişti.'"));
+                    l.collectibles.add(new Collectible(1270, 265, "Kağıt uçak: 'Dört saat de olsa yol yine aşılır.'"));
+                    l.collectibles.add(new Collectible(1790, 305, "Kağıt uçak: 'Az kaldı Burak.'"));
+                    l.collectibles.add(new Collectible(2310, 280, "Kağıt uçak: 'Yürümeye devam et.'"));
+                    l.collectibles.add(new Collectible(2880, 265, "Kağıt uçak: 'Işıklar artık daha yakın.'"));
+                    l.enemies.add(new Enemy(700, 421, 655, 910, 56));
+                    l.enemies.add(new Enemy(1670, 421, 1605, 1930, 60));
+                    l.enemies.add(new Enemy(2720, 421, 2660, 2970, 64));
+                    l.hazards.add(new Hazard(520, 498, 100, 42, 0));
+                    l.hazards.add(new Hazard(1430, 498, 130, 42, 0));
+                    l.hazards.add(new Hazard(2470, 498, 150, 42, 0));
+                    l.checkpoints.add(new Checkpoint(1505, 420));
+                    l.checkpoints.add(new Checkpoint(2580, 420));
+                    break;
+                case 1:
+                    l.name = "Otogar Yolu";
+                    l.width = 3660;
+                    baseColor = 0xFF70905E;
+                    accentColor = tint(baseColor, 1.10f);
+                    add(l.platforms, 0, 455, 470, 85, baseColor);
+                    add(l.platforms, 560, 455, 300, 85, baseColor);
+                    add(l.platforms, 970, 455, 310, 85, baseColor);
+                    add(l.platforms, 1390, 455, 340, 85, baseColor);
+                    add(l.platforms, 1860, 455, 350, 85, baseColor);
+                    add(l.platforms, 2360, 455, 320, 85, baseColor);
+                    add(l.platforms, 2820, 455, 360, 85, baseColor);
+                    add(l.platforms, 3300, 455, 220, 85, baseColor);
+                    add(l.platforms, 300, 365, 120, 28, accentColor);
+                    add(l.platforms, 735, 335, 120, 28, accentColor);
+                    add(l.platforms, 1110, 310, 130, 28, accentColor);
+                    add(l.platforms, 1540, 340, 130, 28, accentColor);
+                    add(l.platforms, 2060, 305, 140, 28, accentColor);
+                    add(l.platforms, 2530, 335, 120, 28, accentColor);
+                    add(l.platforms, 3020, 300, 140, 28, accentColor);
+                    l.movingPlatforms.add(new MovingPlatform(1240, 375, 120, 26, 1200, 1380, 72));
+                    l.movingPlatforms.add(new MovingPlatform(2660, 355, 120, 26, 2610, 2810, 80));
+                    l.collectibles.add(new Collectible(325, 330, "Kağıt uçak: 'Otogar yolu kalabalık ama ben korkmayacağım.'"));
+                    l.collectibles.add(new Collectible(760, 300, "Kağıt uçak: 'Babamla yolculuklarda cam kenarını severdim.'"));
+                    l.collectibles.add(new Collectible(1145, 275, "Kağıt uçak: 'Şimdi kendi yolumu buluyorum.'"));
+                    l.collectibles.add(new Collectible(1570, 305, "Kağıt uçak: 'Durmak yok.'"));
+                    l.collectibles.add(new Collectible(2090, 270, "Kağıt uçak: 'Bir sonraki şehir ışığına kadar.'"));
+                    l.collectibles.add(new Collectible(3050, 265, "Kağıt uçak: 'Babam da beni düşünüyor.'"));
+                    l.enemies.add(new Enemy(640, 421, 590, 820, 60));
+                    l.enemies.add(new Enemy(1450, 421, 1410, 1690, 68));
+                    l.enemies.add(new Enemy(2880, 421, 2850, 3140, 74));
+                    l.hazards.add(new Hazard(470, 498, 90, 42, 0));
+                    l.hazards.add(new Hazard(1280, 498, 110, 42, 0));
+                    l.hazards.add(new Hazard(2210, 498, 150, 42, 0));
+                    l.hazards.add(new Hazard(3180, 498, 120, 42, 0));
+                    l.checkpoints.add(new Checkpoint(1750, 420));
+                    l.checkpoints.add(new Checkpoint(2920, 420));
+                    break;
+                case 2:
+                    l.name = "Yağmurlu Vadi";
+                    l.width = 3820;
+                    baseColor = 0xFF5E7182;
+                    accentColor = tint(baseColor, 1.12f);
+                    add(l.platforms, 0, 455, 430, 85, baseColor);
+                    add(l.platforms, 510, 455, 270, 85, baseColor);
+                    add(l.platforms, 920, 455, 300, 85, baseColor);
+                    add(l.platforms, 1360, 455, 260, 85, baseColor);
+                    add(l.platforms, 1940, 455, 330, 85, baseColor);
+                    add(l.platforms, 2420, 455, 310, 85, baseColor);
+                    add(l.platforms, 2940, 455, 330, 85, baseColor);
+                    add(l.platforms, 3400, 455, 250, 85, baseColor);
+                    add(l.platforms, 300, 360, 120, 28, accentColor);
+                    add(l.platforms, 690, 325, 120, 28, accentColor);
+                    add(l.platforms, 1080, 295, 130, 28, accentColor);
+                    add(l.platforms, 1490, 330, 130, 28, accentColor);
+                    add(l.platforms, 2210, 315, 130, 28, accentColor);
+                    add(l.platforms, 3070, 290, 130, 28, accentColor);
+                    l.movingPlatforms.add(new MovingPlatform(1680, 370, 120, 24, 1640, 1845, 85));
+                    Bridge b1 = new Bridge(1700, 390, 180, 24);
+                    l.bridges.add(b1);
+                    l.switches.add(new Switch(1545, 332));
+                    Bridge b2 = new Bridge(2750, 360, 200, 24);
+                    l.bridges.add(b2);
+                    l.switches.add(new Switch(2595, 300));
+                    l.collectibles.add(new Collectible(325, 325, "Kağıt uçak: 'Yağmur olsa da yürüyeceğim.'"));
+                    l.collectibles.add(new Collectible(720, 290, "Kağıt uçak: 'Babamın sesi hala kulağımda.'"));
+                    l.collectibles.add(new Collectible(1110, 260, "Kağıt uçak: 'Cesaret devam etmektir.'"));
+                    l.collectibles.add(new Collectible(1765, 350, "Kağıt uçak: 'Umut dokununca köprü açılır.'"));
+                    l.collectibles.add(new Collectible(2240, 280, "Kağıt uçak: 'Yağmur geçer, yol kalır.'"));
+                    l.collectibles.add(new Collectible(3110, 255, "Kağıt uçak: 'Şehrin ışıkları artık görünür oldu.'"));
+                    l.enemies.add(new Enemy(560, 421, 530, 740, 66));
+                    l.enemies.add(new Enemy(1980, 421, 1960, 2250, 72));
+                    l.enemies.add(new Enemy(2990, 421, 2960, 3240, 80));
+                    l.hazards.add(new Hazard(430, 498, 80, 42, 1));
+                    l.hazards.add(new Hazard(1220, 498, 140, 42, 1));
+                    l.hazards.add(new Hazard(1620, 498, 110, 42, 1));
+                    l.hazards.add(new Hazard(2730, 498, 120, 42, 1));
+                    l.checkpoints.add(new Checkpoint(1885, 420));
+                    l.checkpoints.add(new Checkpoint(3250, 420));
+                    break;
+                case 3:
+                    l.name = "Şehir Işıkları";
+                    l.width = 4040;
+                    baseColor = 0xFF526B96;
+                    accentColor = tint(baseColor, 1.12f);
+                    add(l.platforms, 0, 455, 420, 85, baseColor);
+                    add(l.platforms, 520, 455, 260, 85, baseColor);
+                    add(l.platforms, 920, 455, 260, 85, baseColor);
+                    add(l.platforms, 1320, 455, 300, 85, baseColor);
+                    add(l.platforms, 1760, 455, 260, 85, baseColor);
+                    add(l.platforms, 2220, 455, 290, 85, baseColor);
+                    add(l.platforms, 2680, 455, 280, 85, baseColor);
+                    add(l.platforms, 3130, 455, 340, 85, baseColor);
+                    add(l.platforms, 3630, 455, 240, 85, baseColor);
+                    add(l.platforms, 260, 360, 120, 28, accentColor);
+                    add(l.platforms, 690, 330, 120, 28, accentColor);
+                    add(l.platforms, 1080, 300, 120, 28, accentColor);
+                    add(l.platforms, 1510, 265, 130, 28, accentColor);
+                    add(l.platforms, 2030, 310, 130, 28, accentColor);
+                    add(l.platforms, 2470, 275, 130, 28, accentColor);
+                    add(l.platforms, 3310, 295, 130, 28, accentColor);
+                    l.movingPlatforms.add(new MovingPlatform(1180, 360, 120, 24, 1150, 1320, 85));
+                    l.movingPlatforms.add(new MovingPlatform(2870, 345, 120, 24, 2840, 3010, 95));
+                    l.movingPlatforms.add(new MovingPlatform(3480, 250, 120, 24, 3430, 3670, 88));
+                    l.collectibles.add(new Collectible(285, 325, "Kağıt uçak: 'Bu şehir çok büyük ama ben kaybolmayacağım.'"));
+                    l.collectibles.add(new Collectible(715, 295, "Kağıt uçak: 'Işıklara bakınca içim ısınıyor.'"));
+                    l.collectibles.add(new Collectible(1105, 265, "Kağıt uçak: 'Her ışık beni biraz daha yaklaştırıyor.'"));
+                    l.collectibles.add(new Collectible(1545, 230, "Kağıt uçak: 'Babam da şimdi gökyüzüne bakıyor olabilir.'"));
+                    l.collectibles.add(new Collectible(2060, 275, "Kağıt uçak: 'Buradayım baba.'"));
+                    l.collectibles.add(new Collectible(3340, 260, "Kağıt uçak: 'Son düzlüğe girdim.'"));
+                    l.enemies.add(new Enemy(560, 421, 550, 760, 68));
+                    l.enemies.add(new Enemy(1810, 421, 1780, 1980, 76));
+                    l.enemies.add(new Enemy(2740, 421, 2710, 2940, 84));
+                    l.enemies.add(new Enemy(3670, 421, 3640, 3850, 84));
+                    l.hazards.add(new Hazard(420, 498, 100, 42, 1));
+                    l.hazards.add(new Hazard(1180, 498, 140, 42, 1));
+                    l.hazards.add(new Hazard(2510, 498, 170, 42, 1));
+                    l.hazards.add(new Hazard(3470, 498, 160, 42, 1));
+                    l.checkpoints.add(new Checkpoint(1700, 420));
+                    l.checkpoints.add(new Checkpoint(3200, 420));
+                    break;
+                default:
+                    l.name = "Buluşma Sokağı";
+                    l.width = 4200;
+                    baseColor = 0xFF8A6EB5;
+                    accentColor = tint(baseColor, 1.12f);
+                    add(l.platforms, 0, 455, 460, 85, baseColor);
+                    add(l.platforms, 560, 455, 320, 85, baseColor);
+                    add(l.platforms, 980, 455, 310, 85, baseColor);
+                    add(l.platforms, 1400, 455, 290, 85, baseColor);
+                    add(l.platforms, 1840, 455, 300, 85, baseColor);
+                    add(l.platforms, 2320, 455, 300, 85, baseColor);
+                    add(l.platforms, 2800, 455, 330, 85, baseColor);
+                    add(l.platforms, 3310, 455, 340, 85, baseColor);
+                    add(l.platforms, 3830, 420, 220, 120, baseColor);
+                    add(l.platforms, 260, 360, 120, 28, accentColor);
+                    add(l.platforms, 720, 325, 120, 28, accentColor);
+                    add(l.platforms, 1120, 295, 130, 28, accentColor);
+                    add(l.platforms, 1540, 335, 130, 28, accentColor);
+                    add(l.platforms, 2450, 310, 130, 28, accentColor);
+                    add(l.platforms, 2920, 290, 140, 28, accentColor);
+                    add(l.platforms, 3440, 255, 140, 28, accentColor);
+                    l.movingPlatforms.add(new MovingPlatform(1705, 360, 120, 24, 1670, 1840, 84));
+                    Bridge finalBridge = new Bridge(2180, 380, 190, 24);
+                    l.bridges.add(finalBridge);
+                    l.switches.add(new Switch(2030, 318));
+                    Bridge lastBridge = new Bridge(3600, 330, 210, 24);
+                    l.bridges.add(lastBridge);
+                    l.switches.add(new Switch(3450, 270));
+                    l.collectibles.add(new Collectible(285, 325, "Kağıt uçak: 'Son bölümdeyim.'"));
+                    l.collectibles.add(new Collectible(745, 290, "Kağıt uçak: 'Biraz daha sabır.'"));
+                    l.collectibles.add(new Collectible(1150, 260, "Kağıt uçak: 'Babam da beni çok özledi.'"));
+                    l.collectibles.add(new Collectible(1570, 300, "Kağıt uçak: 'Kalbim çok hızlı atıyor.'"));
+                    l.collectibles.add(new Collectible(2265, 340, "Kağıt uçak: 'Sevgi yolu kısaltır.'"));
+                    l.collectibles.add(new Collectible(3470, 220, "Son kağıt uçak: 'Ben de seni bekliyordum.'"));
+                    l.enemies.add(new Enemy(620, 421, 600, 850, 70));
+                    l.enemies.add(new Enemy(1880, 421, 1860, 2100, 80));
+                    l.enemies.add(new Enemy(2860, 421, 2830, 3110, 86));
+                    l.hazards.add(new Hazard(460, 498, 100, 42, 0));
+                    l.hazards.add(new Hazard(1290, 498, 110, 42, 0));
+                    l.hazards.add(new Hazard(2140, 498, 180, 42, 0));
+                    l.hazards.add(new Hazard(3650, 498, 180, 42, 0));
+                    l.checkpoints.add(new Checkpoint(1770, 420));
+                    l.checkpoints.add(new Checkpoint(3340, 420));
+                    break;
             }
-            if (idx >= 2) {
-                Bridge b = new Bridge(1660, 390, 210, 26);
-                l.bridges.add(b);
-                l.switches.add(new Switch(1535, 330));
-                l.collectibles.add(new Collectible(1805, 350, "A memory plane: 'Bridges open when hope is touched.'"));
-            }
-            if (idx >= 3) {
-                l.movingPlatforms.add(new MovingPlatform(1840, 270, 120, 24, 1810, 2020, 90));
-                l.hazards.add(new Hazard(2500, 498, 110, 42, 1));
-                l.enemies.add(new Enemy(2690, 421, 2635, 2870, 86));
-            }
-            if (idx == 4) {
-                l.switches.add(new Switch(2290, 265));
-                l.bridges.add(new Bridge(2385, 330, 230, 24));
-                l.collectibles.add(new Collectible(2500, 295, "The final plane: 'I was waiting too.'"));
-                add(l.platforms, 2860, 420, 260, 120, baseColor);
-                l.width = 3250;
-            }
-            l.door = new Door(l.width - 150, 373);
+            l.door = new Door(l.width - 130, 373);
             return l;
         }
 

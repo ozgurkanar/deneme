@@ -47,8 +47,8 @@ jobs:
           for xml in root.rglob('*.xml'):
               ET.parse(xml)
           text = pathlib.Path('app/src/main/res/values/strings.xml').read_text(encoding='utf-8')
-          if '<string name="app_name">Burak\'s Long Road</string>' in text:
-              raise SystemExit('Invalid Android string escape in app_name')
+          if '<string name="app_name">Burakin Uzun Yolu</string>' not in text:
+              raise SystemExit('strings.xml beklenen app_name içeriğini taşımıyor')
           print('Resource XML sanity check passed')
           PY
 
@@ -58,7 +58,7 @@ jobs:
       - name: Upload APK and AAB artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: BuraksLongRoad-builds
+          name: BurakinUzunYoluTR-builds
           if-no-files-found: error
           path: |
             app/build/outputs/apk/debug/*.apk
