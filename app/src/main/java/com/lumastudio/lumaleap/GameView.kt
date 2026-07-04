@@ -165,7 +165,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
                 null
             } ?: return
             try {
-                draw(canvas)
+                drawGame(canvas)
             } finally {
                 try {
                     surfaceHolder.unlockCanvasAndPost(canvas)
@@ -336,7 +336,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback,
 
     // ---------------- Drawing ----------------
 
-    private fun draw(canvas: Canvas) {
+    private fun drawGame(canvas: Canvas) {
         drawBackground(canvas)
 
         when (state) {
